@@ -43,7 +43,10 @@ To address these issues, this project offers a **web-based AI-powered system** t
 ### ⚙️ Prerequisites
 - Python 3.10 (for compatibility with PyTorch/transformers)
 - Git
-- Chrome or any modern browser (updated)
+- Chrome or any modern browser
+- A Google account for Firebase
+
+---
 
 ### 🧱 Step-by-Step Setup
 
@@ -75,12 +78,33 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-#### 5. Add API Keys and Credentials
-Place your Firebase Admin SDK JSON in the correct location (e.g., `project-root/credentials/firebase.json`) and update the path in `app2.py`.
+#### 5. 🔑 Download the DeBERTa Model
+Download the pre-trained Bloom level classification model (`btech.pth`) from this Google Drive link and place it in the root directory:
 
-Set environment variables if needed:
+👉 [Download Model from Google Drive](https://drive.google.com/your-model-link)
+
+#### 6. 🔥 Create Firebase Project and Admin Key
+1. Go to [Firebase Console](https://drive.google.com/drive/folders/1N6dMD3rkbqF1O5wOqF2GhCAzm0w_GDzV?usp=drive_link)
+2. Create a new project.
+3. Add a web app and enable **Authentication > Email/Password** and **Google Sign-In**.
+4. Go to **Project Settings > Service Accounts**.
+5. Click **Generate New Private Key**, download the `.json` file.
+
+
+Update `app.py` to point to this key:
+```python
+cred = credentials.Certificate("firebase.json")
+```
+
+#### 7. Set API Key for Google Generative AI
+Export your Gemini API key:
 ```bash
-export LLAMA_CLOUD_API_KEY=your_llama_api_key
+export GOOGLE_API_KEY=your_gemini_api_key
+```
+
+Or set it inside `app2.py`:
+```python
+api_key = "your_gemini_api_key"
 ```
 
 ---

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --danger-color: #ef476f;
+            --text-color: #2b2d42;
+            --light-text: #f8f9fa;
+            --bg-color: #f8f9fa;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.8), rgba(76, 201, 240, 0.8));
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-15px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(-30px) translateX(10px);
+            }
+        }
+        
+        .container {
+            width: 400px;
+            max-width: 90%;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+            color: var(--text-color);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 3px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+        
+        .submit-btn, .google-btn, .resend-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 10px 0;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .submit-btn:hover, .google-btn:hover, .resend-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.4);
+        }
+        
+        .submit-btn:active, .google-btn:active, .resend-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .submit-btn::before, .google-btn::before, .resend-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        .submit-btn:hover::before, .google-btn:hover::before, .resend-btn:hover::before {
+            left: 100%;
+        }
+        
+        .google-btn {
+            background: #fff;
+            color: var(--text-color);
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .google-btn:hover {
+            background: #f8f9fa;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .resend-btn {
+            background: var(--accent-color);
+            margin-top: 10px;
+        }
+        
+        .info-message, .error-message {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .info-message {
+            background-color: rgba(76, 201, 240, 0.2);
+            color: #023e8a;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .error-message {
+            background-color: rgba(239, 71, 111, 0.2);
+            color: #9d0208;
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .signup-link, .login-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+        
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container animate__animated animate__fadeIn">
+        <h1>Login</h1>
+        {% if message %}
+        <div class="info-message">{{ message }}</div>
+        {% endif %}
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+        
+        <form method="POST" class="login-form">
+            <div class="form-group animate__animated animate__fadeIn" style="animation-delay: 0.2s">
+                <label for="email">
+                    <i class="fas fa-envelope"></i> Email:
+                </label>
+                <input type="email" name="email" id="email" value="{{ email if email else '' }}" required>
+            </div>
+            
+            <div class="form-group animate__animated animate__fadeIn" style="animation-delay: 0.3s">
+                <label for="password">
+                    <i class="fas fa-lock"></i> Password:
+                </label>
+                <input type="password" name="password" id="password" required>
+            </div>
+            
+            <button type="submit" class="submit-btn animate__animated animate__fadeIn" style="animation-delay: 0.4s">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+        
+        {% if show_resend %}
+        <form method="POST" action="{{ url_for('resend_verification') }}" class="resend-form animate__animated animate__fadeIn" style="animation-delay: 0.5s">
+            <input type="hidden" name="email" value="{{ email }}">
+            <button type="submit" class="resend-btn">
+                <i class="fas fa-paper-plane"></i> Resend Verification Email
+            </button>
+        </form>
+        {% endif %}
+        
+        <p class="signup-link animate__animated animate__fadeIn" style="animation-delay: 0.6s">
+            Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a>
+        </p>
+        
+        <p class="animate__animated animate__fadeIn" style="animation-delay: 0.7s">Or</p>
+        
+        <a href="{{ url_for('google_login') }}" class="google-btn animate__animated animate__fadeIn" style="animation-delay: 0.8s">
+            <i class="fab fa-google"></i> Login with Google
+        </a>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 5px and 20px
+                const size = Math.random() * 15 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Initialize particles when page loads
+        document.addEventListener('DOMContentLoaded', createParticles);
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!-- templates/verification_sent.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification Sent</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Verification Email</h1>
+        
+        {% if email_sent %}
+            <div class="success-message">
+                <p>We've sent a verification email to <strong>{{ email }}</strong>.</p>
+                <p>Please check your inbox and click the verification link to activate your account.</p>
+                <p>If you don't see the email, please check your spam folder.</p>
+            </div>
+        {% else %}
+            <div class="error-message">
+                <p>We encountered an issue while sending the verification email to <strong>{{ email }}</strong>.</p>
+                <p>Please try again or contact support if the problem persists.</p>
+            </div>
+            
+            <form method="POST" action="{{ url_for('resend_verification') }}" class="resend-form">
+                <input type="hidden" name="email" value="{{ email }}">
+                <button type="submit" class="resend-btn">Try Again</button>
+            </form>
+        {% endif %}
+        
+        <div class="action-links">
+            <p>
+                <a href="{{ url_for('login') }}" class="btn">Go to Login</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

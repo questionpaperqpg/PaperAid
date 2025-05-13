@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Selection</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --danger-color: #ef476f;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --text-color: #2b2d42;
+            --light-text: #f8f9fa;
+            --bg-color: #f8f9fa;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --input-border: #d1d1d1;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.8), rgba(76, 201, 240, 0.8));
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text-color);
+            padding: 40px 20px;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-15px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(-30px) translateX(10px);
+            }
+        }
+        
+        .container {
+            width: 700px;
+            max-width: 95%;
+            padding: 40px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 0.8s ease;
+            position: relative;
+            z-index: 10;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1, h2 {
+            margin-bottom: 30px;
+            color: var(--text-color);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1::after, h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 3px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 16px;
+        }
+        
+        .form-group select, 
+        .form-group input, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            background-color: white;
+            color: var(--text-color);
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .form-group select:focus, 
+        .form-group input:focus, 
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            min-width: 150px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(-1px);
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        button:hover::before {
+            left: 100%;
+        }
+        
+        .add-subject-btn {
+            background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
+            margin-top: 20px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 100;
+            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(3px);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: modalSlideDown 0.4s ease;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes modalSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 28px;
+            color: var(--text-color);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .close:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            transform: rotate(90deg);
+        }
+        
+        #message {
+            display: none;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: 500;
+            animation: fadeInDown 0.5s ease;
+            text-align: left;
+            position: relative;
+            padding-left: 45px;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        #message::before {
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+        }
+        
+        .success {
+            background-color: rgba(6, 214, 160, 0.2);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .success::before {
+            content: '\f058'; /* Check circle icon */
+        }
+        
+        .error {
+            background-color: rgba(239, 71, 111, 0.2);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .error::before {
+            content: '\f057'; /* Times circle icon */
+        }
+        
+        .syllabus-textarea {
+            width: 100%;
+            min-height: 300px;
+            margin: 10px 0;
+            padding: 16px;
+            font-family: 'Poppins', monospace;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        /* Custom select styling */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232b2d42' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+            padding-right: 40px;
+        }
+        
+        /* Form actions */
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 15px;
+        }
+        
+        /* Loading spinner */
+        .loading-spinner {
+            display: none;
+            margin-left: 10px;
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+        
+        .loading-spinner.active {
+            display: inline-block;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                padding: 20px;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div id="message"></div>
+        
+        <h1 class="animate__animated animate__fadeIn">Select Year, Branch, and Subject</h1>
+        
+        <form action="{{ url_for('secondpage') }}" method="GET" id="subjectForm" class="animate__animated animate__fadeIn animate__delay-1s" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label for="year">
+                    <i class="fas fa-calendar-alt"></i> Select Year:
+                </label>
+                <select id="year" name="year" onchange="updateSubjects()">
+                    <option value="">Select Year</option>
+                    <option value="First Year">First Year</option>
+                    <option value="Second Year">Second Year</option>
+                    <option value="Third Year">Third Year</option>
+                    <option value="Fourth Year">Fourth Year</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="branch">
+                    <i class="fas fa-code-branch"></i> Select Branch:
+                </label>
+                <select id="branch" name="branch" onchange="updateSubjects()">
+                    <option value="">Select Branch</option>
+                    <option value="Computer Science">Computer Science</option>
+<option value="Electrical">Electrical</option>
+<option value="Electronics and Communication">Electronics and Communication</option>
+<option value="Instrumentation">Instrumentation</option>
+<option value="Mechanical">Mechanical</option>
+<option value="Metallurgy">Metallurgy</option>
+<option value="Civil">Civil</option>
+<option value="Production">Production</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="subject">
+                    <i class="fas fa-book"></i> Select Subject:
+                </label>
+                <select id="subject" name="subject">
+                    <option value="">Select Subject</option>
+                </select>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit">
+                    <i class="fas fa-arrow-right"></i> Continue
+                </button>
+            </div>
+        </form>
+        
+        <button onclick="openAddSubjectModal()" class="add-subject-btn animate__animated animate__fadeIn animate__delay-2s">
+            <i class="fas fa-plus"></i> Add New Subject
+        </button>
+    </div>
+
+    <!-- Add Subject Modal -->
+    <div id="addSubjectModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddSubjectModal()">&times;</span>
+            <h2>Add New Subject</h2>
+            <form id="addSubjectForm" onsubmit="submitNewSubject(event)">
+                <input type="hidden" id="modalYear" name="year">
+                <input type="hidden" id="modalDepartment" name="department">
+                
+                <div class="form-group">
+                    <label for="subjectName">
+                        <i class="fas fa-book-open"></i> Subject Name:
+                    </label>
+                    <input type="text" id="subjectName" name="subject_name" required placeholder="Enter subject name">
+                </div>
+
+                <div class="form-group">
+                    <label for="subjectCode">
+                        <i class="fas fa-hashtag"></i> Subject Code:
+                    </label>
+                    <input type="text" id="subjectCode" name="subject_code" required placeholder="Enter subject code (e.g. CS101)">
+                </div>
+                
+                <div class="form-group">
+                    <label for="syllabusText">
+                        <i class="fas fa-file-alt"></i> Syllabus Content:
+                    </label>
+                    <textarea id="syllabusText" name="syllabus_text" class="syllabus-textarea" 
+                              placeholder="Paste the syllabus content here..." required></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" onclick="closeAddSubjectModal()" style="background: linear-gradient(45deg, #8e8e8e, #6c6c6c);">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" id="submitButton">
+                        <i class="fas fa-plus"></i> Add Subject
+                        <span class="loading-spinner" id="loadingSpinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 5px and 20px
+                const size = Math.random() * 15 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Initialize particles when page loads
+        document.addEventListener('DOMContentLoaded', createParticles);
+        
+        async function updateSubjects() {
+            const year = document.getElementById("year").value;
+            const branch = document.getElementById("branch").value;
+            const subjectDropdown = document.getElementById("subject");
+            
+            if (year && branch) {
+                try {
+                    // Show loading state
+                    subjectDropdown.innerHTML = "<option value=''>Loading subjects...</option>";
+                    
+                    const response = await fetch(`/get_subjects?year=${year}&department=${branch}`);
+                    const subjects = await response.json();
+                    
+                    subjectDropdown.innerHTML = "<option value=''>Select Subject</option>";
+                    subjects.forEach(subject => {
+                        let option = document.createElement("option");
+                        option.value = subject;
+                        option.text = subject;
+                        subjectDropdown.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error("Error fetching subjects:", error);
+                    subjectDropdown.innerHTML = "<option value=''>Error loading subjects</option>";
+                }
+            }
+        }
+
+        function openAddSubjectModal() {
+            const year = document.getElementById("year").value;
+            const branch = document.getElementById("branch").value;
+            
+            if (!year || !branch) {
+                showMessage("Please select Year and Branch first", false);
+                return;
+            }
+            
+            document.getElementById("modalYear").value = year;
+            document.getElementById("modalDepartment").value = branch;
+            document.getElementById("addSubjectModal").style.display = "block";
+            
+            // Prevent body scrolling when modal is open
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeAddSubjectModal() {
+            document.getElementById("addSubjectModal").style.display = "none";
+            document.getElementById("addSubjectForm").reset();
+            
+            // Restore body scrolling
+            document.body.style.overflow = "auto";
+        }
+        
+        function showMessage(text, isSuccess) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = isSuccess ? 'success' : 'error';
+            messageDiv.textContent = text;
+            messageDiv.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        async function submitNewSubject(event) {
+            event.preventDefault();
+            
+            // Show loading spinner and disable submit button
+            const submitButton = document.getElementById('submitButton');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            submitButton.disabled = true;
+            loadingSpinner.classList.add('active');
+            
+            const formData = new FormData(document.getElementById('addSubjectForm'));
+            
+            try {
+                const response = await fetch('/add_subject', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                showMessage(result.message, result.success);
+                
+                if (result.success) {
+                    closeAddSubjectModal();
+                    // Update the subjects dropdown
+                    await updateSubjects();
+                    
+                    // Select the newly added subject
+                    const subjectDropdown = document.getElementById('subject');
+                    const options = Array.from(subjectDropdown.options);
+                    const optionToSelect = options.find(option => option.value === result.subject);
+                    if (optionToSelect) {
+                        optionToSelect.selected = true;
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('An error occurred while adding the subject', false);
+            } finally {
+                // Hide loading spinner and re-enable submit button
+                submitButton.disabled = false;
+                loadingSpinner.classList.remove('active');
+            }
+        }
+        
+        // Close modal if clicked outside the modal content
+        window.onclick = function(event) {
+            const modal = document.getElementById('addSubjectModal');
+            if (event.target === modal) {
+                closeAddSubjectModal();
+            }
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeAddSubjectModal();
+            }
+        });
+
+        // Validate form before submission
+        function validateForm() {
+            const year = document.getElementById("year").value;
+            const branch = document.getElementById("branch").value;
+            
+            if (!year || !branch) {
+                showMessage("Please select Year and Branch before continuing", false);
+                return false; // Prevent form submission
+            }
+            
+            return true; // Allow form submission
+        }
+    </script>
+</body>
+</html>

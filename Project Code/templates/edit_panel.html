@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Question Paper</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .question-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .question-header {
+            margin-bottom: 10px;
+            font-weight: bold;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .question-text {
+            min-height: 100px;
+        }
+        .question-footer {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .section-header {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-left: 4px solid #007bff;
+        }
+        .topic-header {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .subtopic-header {
+            margin-bottom: 10px;
+            font-style: italic;
+            color: #555;
+        }
+        .loading-spinner {
+            display: none;
+            margin-left: 10px;
+        }
+        .paper-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #e9f7fe;
+            border-radius: 5px;
+        }
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4 mb-5">
+        <h1 class="text-center mb-4">Edit Question Paper</h1>
+        
+        <div class="paper-info">
+            <h3>{{ paper_info.subject }} ({{ paper_info.year }})</h3>
+            {% if paper_info.branch %}
+                <p>Branch: {{ paper_info.branch }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="alert alert-info">
+            <p><strong>Instructions:</strong> Review each question below. You can edit the text directly or click "Regenerate" to get a new question. Once all questions are finalized, click "Download Paper" to generate the PDF.</p>
+        </div>
+        
+        <form id="paperForm">
+            {% set current_section = 0 %}
+            {% set current_topic = "" %}
+            {% set current_subtopic = "" %}
+            
+            {% for question in questions %}
+                {% if question.section != current_section %}
+                    {% set current_section = question.section %}
+                    {% set current_topic = "" %}
+                    {% set current_subtopic = "" %}
+                    <div class="section-header">
+                        <h4>SECTION {{ question.section }}: {{ question.section_type | upper }}</h4>
+                        <p>Bloom's Taxonomy Level: {{ question.bloom_level }}</p>
+                        <p>Marks per Question: {{ question.marks }}</p>
+                    </div>
+                {% endif %}
+                
+                {% if question.topic != current_topic %}
+                    {% set current_topic = question.topic %}
+                    {% set current_subtopic = "" %}
+                    <div class="topic-header">
+                        <h5>Topic: {{ question.topic }}</h5>
+                    </div>
+                {% endif %}
+                
+                {% if question.subtopic != current_subtopic %}
+                    {% set current_subtopic = question.subtopic %}
+                    <div class="subtopic-header">
+                        <h6>Subtopic: {{ question.subtopic }}</h6>
+                    </div>
+                {% endif %}
+                
+                <div class="question-container" id="question-{{ question.id }}">
+                    <div class="question-header">
+                        <span>Question {{ question.id }}</span> 
+                        <span class="badge badge-primary">{{ question.marks }} Marks</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <textarea class="form-control question-text" 
+                                 id="question-text-{{ question.id }}" 
+                                 rows="4"
+                                 {% if question.error is defined and question.error %}
+                                 style="background-color: #ffeeee;"
+                                 {% endif %}
+                                 >{{ question.text }}</textarea>
+                    </div>
+                    
+                    <div class="question-footer">
+                        <button type="button" class="btn btn-outline-secondary regenerate-btn" 
+                                data-id="{{ question.id }}">
+                            Regenerate
+                            <span class="spinner-border spinner-border-sm loading-spinner" 
+                                  id="spinner-{{ question.id }}" role="status" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+            
+            <div class="text-center mt-5 mb-3">
+                <button type="button" id="downloadBtn" class="btn btn-primary btn-lg mr-3">Download Paper</button>
+                <a href="{{ url_for('zeropage') }}" class="btn btn-secondary btn-lg">Return to Dashboard</a>
+            </div>
+        </form>
+    </div>
+    
+    <div id="loadingOverlay">
+        <div class="text-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <h4 class="mt-3">Generating PDF...</h4>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            // Handle regenerate button clicks
+            $('.regenerate-btn').on('click', function() {
+                const questionId = $(this).data('id');
+                const spinner = $(`#spinner-${questionId}`);
+                const btn = $(this);
+                
+                // Show spinner and disable button
+                spinner.show();
+                btn.prop('disabled', true);
+                
+                // Make AJAX request to regenerate question
+                $.ajax({
+                    url: "/regenerate_question",  // Make sure this matches your Flask route
+                    method: 'POST',
+                    data: {
+                        question_id: questionId
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Update the question text
+                            $(`#question-text-${questionId}`).val(response.question_text);
+                            // Remove error styling if present
+                            $(`#question-text-${questionId}`).css('background-color', '');
+                        } else {
+                            alert("Error regenerating question: " + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX Error:", status, error);
+                        alert("Server error while regenerating question. Check console for details.");
+                    },
+                    complete: function() {
+                        // Hide spinner and enable button
+                        spinner.hide();
+                        btn.prop('disabled', false);
+                    }
+                });
+            });
+            
+            // Handle download button
+            $('#downloadBtn').on('click', function() {
+                // Show loading overlay
+                $('#loadingOverlay').show();
+                
+                // Automatically save all questions before downloading
+                const promises = [];
+                $('.question-text').each(function() {
+                    const questionId = $(this).attr('id').replace('question-text-', '');
+                    const questionText = $(this).val();
+                    
+                    // Create a promise for each AJAX request
+                    const promise = $.ajax({
+                        url: "/update_question",
+                        method: 'POST',
+                        data: {
+                            question_id: questionId,
+                            question_text: questionText
+                        }
+                    });
+                    
+                    promises.push(promise);
+                });
+                
+                // When all saves are complete, download the paper
+                $.when.apply($, promises).then(function() {
+                    // Create form for download
+                    window.location.href = "/download_paper";
+                }).fail(function() {
+                    alert("Error saving questions before download.");
+                    $('#loadingOverlay').hide();
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

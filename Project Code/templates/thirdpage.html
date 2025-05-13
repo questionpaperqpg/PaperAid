@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Sections</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --danger-color: #ef476f;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --text-color: #2b2d42;
+            --light-text: #f8f9fa;
+            --bg-color: #f8f9fa;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --input-border: #d1d1d1;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.8), rgba(76, 201, 240, 0.8));
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text-color);
+            padding: 40px 20px;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-15px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(-30px) translateX(10px);
+            }
+        }
+        
+        .container {
+            width: 800px;
+            max-width: 90%;
+            padding: 40px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 0.8s ease;
+            position: relative;
+            z-index: 10;
+            height: 85vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1, h2 {
+            margin-bottom: 30px;
+            color: var(--text-color);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1::after, h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 3px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 16px;
+        }
+        
+        .form-group select, 
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            background-color: white;
+            color: var(--text-color);
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .form-group select:focus, 
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            min-width: 150px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(-1px);
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        button:hover::before {
+            left: 100%;
+        }
+        
+        .add-topic-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
+            margin-top: 20px;
+        }
+        
+        .view-syllabus-button {
+            background: linear-gradient(45deg, var(--success-color), var(--primary-color));
+        }
+        
+        .subtopic-box {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid var(--input-border);
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            transition: all 0.3s;
+        }
+        
+        .subtopic-box:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .subtopic-option {
+            display: block;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        
+        .subtopic-option:hover {
+            background-color: rgba(76, 201, 240, 0.1);
+        }
+        
+        .subtopic-option input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .topic {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
+            border: 1px solid var(--input-border);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        hr {
+            margin: 20px 0;
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--input-border), transparent);
+        }
+        
+        /* Custom select styling */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232b2d42' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+            padding-right: 40px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+        }
+        
+        /* Total marks display */
+        #total-marks {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    width: fit-content;
+    margin: -15px auto 25px auto; /* Negative top margin to move it closer to the heading */
+    text-align: center;
+    display: block;
+}
+        
+        /* Bloom's taxonomy tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 10px;
+            cursor: help;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #555;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Error message styles */
+        #error-message {
+            color: red;
+            font-weight: bold;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #ffecec;
+            border-left: 5px solid #f44336;
+            display: none; /* Hidden by default */
+        }
+        
+        /* Highlight missing fields */
+        .error-field {
+            border: 2px solid red !important;
+            background-color: #fff0f0 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container animate__animated animate__fadeIn">
+        <h1>Add Sections for {{ year }} {{ subject }}</h1>
+        <p id="total-marks">Total Marks: 0 / {{ total_marks }}</p>
+        <div id="error-message" style="display: none;"></div>
+
+        <form id="question-paper-form" action="{{ url_for('generate') }}" method="POST">
+            <input type="hidden" name="year" value="{{ year }}">
+            <input type="hidden" name="subject" value="{{ subject }}">
+            <input type="hidden" name="topic_subtopic_map" value="{{ topic_subtopic_map }}">
+
+            <div id="sections-container">
+                <div class="section">
+                    <div class="form-group">
+                        <label for="question_type">
+                            <i class="fas fa-question-circle"></i> Question Type:
+                        </label>
+                        <input type="text" name="question_type[]" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="no_of_questions">
+                            <i class="fas fa-list-ol"></i> No. of Questions:
+                        </label>
+                        <input type="number" name="no_of_questions[]" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="marks_per_question">
+                            <i class="fas fa-star"></i> Marks per Question:
+                        </label>
+                        <input type="number" name="marks_per_question[]" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bloom_level">
+                            <i class="fas fa-brain"></i> Bloom's Taxonomy Level:
+                        </label>
+                        <select name="bloom_level[]" required>
+                            <option value="">Select Level</option>
+                            <option value="1">1 - Remember</option>
+                            <option value="2">2 - Understand</option>
+                            <option value="3">3 - Apply</option>
+                            <option value="4">4 - Analyze</option>
+                            <option value="5">5 - Evaluate</option>
+                            <option value="6">6 - Create</option>
+                        </select>
+                        <div class="tooltip">?
+                            <span class="tooltiptext">
+                                <strong>1. Remember:</strong> Recall facts and basic concepts<br>
+                                <strong>2. Understand:</strong> Explain ideas or concepts<br>
+                                <strong>3. Apply:</strong> Use information in new situations<br>
+                                <strong>4. Analyze:</strong> Draw connections among ideas<br>
+                                <strong>5. Evaluate:</strong> Justify a stand or decision<br>
+                                <strong>6. Create:</strong> Produce new or original work
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-clipboard-list"></i> Topics and Subtopics:
+                        </label>
+                        <div class="topics-container" id="topics-container-1">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <hr>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" onclick="addSection()">
+                    <i class="fas fa-plus"></i> Add Another Section
+                </button>
+                <button type="button" id="submit-btn" onclick="validateAndSubmit()">
+                    <i class="fas fa-file-alt"></i> Generate Question Paper
+                </button>
+                <button type="button" onclick="window.location.href='{{ url_for('zeropage') }}'" class="back-btn">
+                    <i class="fas fa-home"></i> Back to Home
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize variables
+            const totalMarksValue = {{ total_marks }};
+            let currentTotal = 0;
+            let sectionCount = 1;
+            
+            // Parse the topic-subtopic map from the server
+            let topicSubtopicMap = JSON.parse('{{ topic_subtopic_map|safe }}');
+            
+            // Function to create topic checkboxes
+            function createTopicCheckboxes(containerId, sectionIndex) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = ''; // Clear existing content
+                
+                for (const topic in topicSubtopicMap) {
+                    const subtopics = topicSubtopicMap[topic];
+                    const subtopicsText = subtopics.join(', ');
+                    
+                    const topicItem = document.createElement('div');
+                    topicItem.classList.add('topic-item');
+                    
+                    topicItem.innerHTML = `
+                        <div class="topic-title">
+                            <input type="checkbox" name="topic_${sectionIndex}[]" value="${topic}">
+                            <label>${topic}</label>
+                        </div>
+                        <div class="subtopics-list">${subtopicsText}</div>
+                    `;
+                    
+                    container.appendChild(topicItem);
+                }
+            }
+            
+            // Create topic checkboxes for the first section
+            createTopicCheckboxes('topics-container-1', 1);
+            
+            // Function to update total marks
+            function updateTotalMarks() {
+                const sections = document.querySelectorAll('.section');
+                currentTotal = 0;
+                
+                sections.forEach(section => {
+                    const noOfQuestions = parseInt(section.querySelector('input[name="no_of_questions[]"]').value) || 0;
+                    const marksPerQuestion = parseInt(section.querySelector('input[name="marks_per_question[]"]').value) || 0;
+                    currentTotal += noOfQuestions * marksPerQuestion;
+                });
+                
+                document.getElementById('total-marks').textContent = `Total Marks: ${currentTotal} / ${totalMarksValue}`;
+            }
+            
+            // Function to add a new section
+            function addSection() {
+                const sectionsContainer = document.getElementById('sections-container');
+                const newSectionDiv = document.createElement('div');
+                newSectionDiv.classList.add('section');
+                
+                sectionCount++;
+                
+                const topicsContainerId = `topics-container-${sectionCount}`;
+                
+                newSectionDiv.innerHTML = `
+                    <div class="form-group">
+                        <label for="question_type">
+                            <i class="fas fa-question-circle"></i> Question Type:
+                        </label>
+                        <input type="text" name="question_type[]" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="no_of_questions">
+                            <i class="fas fa-list-ol"></i> No. of Questions:
+                        </label>
+                        <input type="number" name="no_of_questions[]" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="marks_per_question">
+                            <i class="fas fa-star"></i> Marks per Question:
+                        </label>
+                        <input type="number" name="marks_per_question[]" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bloom_level">
+                            <i class="fas fa-brain"></i> Bloom's Taxonomy Level:
+                        </label>
+                        <select name="bloom_level[]" required>
+                            <option value="">Select Level</option>
+                            <option value="1">1 - Remember</option>
+                            <option value="2">2 - Understand</option>
+                            <option value="3">3 - Apply</option>
+                            <option value="4">4 - Analyze</option>
+                            <option value="5">5 - Evaluate</option>
+                            <option value="6">6 - Create</option>
+                        </select>
+                        <div class="tooltip">?
+                            <span class="tooltiptext">
+                                <strong>1. Remember:</strong> Recall facts and basic concepts<br>
+                                <strong>2. Understand:</strong> Explain ideas or concepts<br>
+                                <strong>3. Apply:</strong> Use information in new situations<br>
+                                <strong>4. Analyze:</strong> Draw connections among ideas<br>
+                                <strong>5. Evaluate:</strong> Justify a stand or decision<br>
+                                <strong>6. Create:</strong> Produce new or original work
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-clipboard-list"></i> Topics and Subtopics:
+                        </label>
+                        <div class="topics-container" id="${topicsContainerId}">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <hr>
+                `;
+                
+                sectionsContainer.appendChild(newSectionDiv);
+                
+                // Create topic checkboxes for the new section
+                createTopicCheckboxes(topicsContainerId, sectionCount);
+                
+                // Add event listeners for the new section
+                const newInputs = newSectionDiv.querySelectorAll('input[name="no_of_questions[]"], input[name="marks_per_question[]"]');
+                newInputs.forEach(input => {
+                    input.addEventListener('input', updateTotalMarks);
+                });
+            }
+            
+            // Function to validate form and check if all required fields are filled
+            function validateAndSubmit() {
+                // Hide error message initially
+                const errorMessage = document.getElementById('error-message');
+                errorMessage.style.display = 'none';
+                
+                // Remove any existing error classes
+                document.querySelectorAll('.error-field').forEach(field => {
+                    field.classList.remove('error-field');
+                });
+                
+                let isValid = true;
+                let errors = [];
+                
+                // Check if all required fields are filled
+                const requiredFields = document.querySelectorAll('input[required], select[required]');
+                requiredFields.forEach(field => {
+                    if (!field.value) {
+                        isValid = false;
+                        field.classList.add('error-field');
+                        if (field.tagName === 'SELECT') {
+                            errors.push("Please select a Bloom's Taxonomy level for all sections");
+                        } else {
+                            const fieldLabel = field.previousElementSibling ? field.previousElementSibling.textContent.trim() : "All fields";
+                            errors.push(`${fieldLabel} must be filled`);
+                        }
+                    }
+                });
+                
+                // Check if at least one topic is selected for each section
+                const sections = document.querySelectorAll('.section');
+                sections.forEach((section, index) => {
+                    const topicCheckboxes = section.querySelectorAll(`input[name="topic_${index+1}[]"]`);
+                    let topicSelected = false;
+                    
+                    topicCheckboxes.forEach(checkbox => {
+                        if (checkbox.checked) {
+                            topicSelected = true;
+                        }
+                    });
+                    
+                    if (!topicSelected) {
+                        isValid = false;
+                        errors.push(`Please select at least one topic for section ${index+1}`);
+                        
+                        // Highlight the topic container
+                        const topicContainer = section.querySelector('.topics-container');
+                        if (topicContainer) {
+                            topicContainer.classList.add('error-field');
+                        }
+                    }
+                });
+                
+                // Check if total marks match
+                if (currentTotal !== totalMarksValue) {
+                    isValid = false;
+                    errors.push(`Total marks (${currentTotal}) do not match the required total (${totalMarksValue})`);
+                }
+                
+                // Display error message if validation fails
+                if (!isValid) {
+                    errorMessage.innerHTML = errors.join('<br>');
+                    errorMessage.style.display = 'block';
+                    
+                    // Scroll to the error message
+                    errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return false;
+                }
+                
+                // Submit the form if validation passes
+                document.getElementById('question-paper-form').submit();
+            }
+            
+            // Add event listeners to the initial section's input fields
+            const initialSection = document.querySelector('.section');
+            if (initialSection) {
+                const inputs = initialSection.querySelectorAll('input[name="no_of_questions[]"], input[name="marks_per_question[]"]');
+                inputs.forEach(input => {
+                    input.addEventListener('input', updateTotalMarks);
+                });
+            }
+            
+            // Make functions globally accessible
+            window.updateTotalMarks = updateTotalMarks;
+            window.addSection = addSection;
+            window.validateAndSubmit = validateAndSubmit;
+            
+            // Initial calculation when page loads
+            updateTotalMarks();
+        });
+    </script>
+</body>
+</html>

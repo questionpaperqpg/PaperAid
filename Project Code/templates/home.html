@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500&display=swap');
+
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+            --text-color: #2b2d42;
+            --light-text: #f8f9fa;
+            --bg-color: #175ea4;
+            --google-blue: #4285F4;
+            --google-red: #DB4437;
+            --google-yellow: #F4B400;
+            --google-green: #0F9D58;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.8), rgba(76, 201, 240, 0.8));
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-15px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(-30px) translateX(10px);
+            }
+        }
+
+        .container {
+            width: 400px;
+            max-width: 90%;
+            padding: 40px;
+            background-color: rgba(236, 247, 245, 1);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-container {
+            margin-bottom: 10px;
+        }
+
+        .logo-container img {
+            max-height: 250px;
+            max-width: 100%;
+        }
+
+        .welcome-message {
+            margin-bottom: 30px;
+            animation: fadeIn 1.2s ease;
+        }
+
+        .welcome-message h1 {
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 32px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .welcome-message h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 3px;
+        }
+
+        .auth-links {
+            margin-bottom: 30px;
+            font-size: 18px;
+            animation: fadeIn 1.4s ease;
+        }
+
+        .auth-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-link:hover {
+            color: var(--secondary-color);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .google-signup {
+            margin-top: 30px;
+            animation: fadeIn 1.6s ease;
+        }
+
+        .google-signup p {
+            margin-bottom: 15px;
+            color: var(--text-color);
+            font-size: 16px;
+        }
+
+        /* Updated Google Button */
+        .google-btn {
+            display: flex;
+            align-items: center;
+            max-width: 240px;
+            margin: 0 auto;
+            background-color: var(--google-blue); /* Google blue background */
+            border-radius: 4px;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,.25);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .google-btn:hover {
+            box-shadow: 0 0 6px var(--google-blue);
+            transform: translateY(-1px);
+            background-color: #357ABD; /* Darker blue on hover */
+        }
+
+        .google-btn:active {
+            background-color: #2A5F9E; /* Even darker blue on active */
+        }
+
+        .google-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-image: linear-gradient(
+                to bottom,
+                var(--google-blue) 0%,
+                var(--google-blue) 25%,
+                var(--google-red) 25%,
+                var(--google-red) 50%,
+                var(--google-yellow) 50%,
+                var(--google-yellow) 75%,
+                var(--google-green) 75%,
+                var(--google-green) 100%
+            );
+        }
+
+        .google-icon-wrapper {
+            padding: 12px;
+            background-color: white; /* White background for the icon */
+            width: 40px;
+            height: 40px;
+            border-radius: 2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 4px;
+        }
+
+        .google-icon {
+            width: 18px;
+            height: 18px;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+        }
+
+        .btn-separator {
+            height: 28px;
+            width: 1px;
+            background-color: rgba(255, 255, 255, 0.3); /* Lighter separator */
+            margin: 0 8px;
+        }
+
+        .btn-text {
+            padding: 10px 12px;
+            font-family: 'Roboto', sans-serif;
+            color: white; /* White text for contrast */
+            font-size: 14px;
+            letter-spacing: 0.2px;
+            font-weight: 500;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        /* Rainbow hover effect */
+        
+
+        @keyframes rainbow {
+            0%, 100% {
+                background-position: 0 0;
+            }
+            50% {
+                background-position: 100% 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+        </div>
+        <div class="welcome-message animate__animated animate__fadeIn" style="animation-delay: 0.2s">
+            <h1>Welcome!</h1>
+        </div>
+        <div class="auth-links animate__animated animate__fadeIn" style="animation-delay: 0.4s">
+            <a href="{{ url_for('signup') }}" class="auth-link"><i class="fas fa-user-plus"></i> Sign Up</a> &nbsp;|&nbsp;
+            <a href="{{ url_for('login') }}" class="auth-link"><i class="fas fa-sign-in-alt"></i> Log In</a>
+        </div>
+        <div class="google-signup animate__animated animate__fadeIn" style="animation-delay: 0.6s">
+            <p>Or sign up with Google:</p>
+            <a href="{{ url_for('google_login') }}" class="google-btn">
+                <div class="google-icon-wrapper">
+                    <svg class="google-icon" viewBox="0 0 366 372" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M125.9 10.2c40.2-13.9 85.3-13.6 125.3 1.1 22.2 8.2 42.5 21 59.9 37.1-5.8 6.3-12.1 12.2-18.1 18.3l-34.2 34.2c-11.3-10.8-25.1-19-40.1-23.6-17.6-5.3-36.6-6.1-54.6-2.2-21 4.5-40.5 15.5-55.6 30.9-12.2 12.3-21.4 27.5-27 43.9-20.3-15.8-40.6-31.5-61-47.3 21.5-43 60.1-76.9 105.4-92.4z" fill="#EA4335"/>
+                        <path d="M20.6 102.4c20.3 15.8 40.6 31.5 61 47.3-8 23.3-8 49.2 0 72.4-20.3 15.8-40.6 31.6-60.9 47.3C1.9 232.7-3.8 189.6 4.4 149.2c3.3-16.2 8.7-32 16.2-46.8z" fill="#FBBC05"/>
+                        <path d="M361.7 151.1c5.8 32.7 4.5 66.8-4.7 98.8-8.5 29.3-24.6 56.5-47.1 77.2l-59.1-45.9c19.5-13.1 33.3-34.3 37.2-57.5H186.6c.1-24.2.1-48.4.1-72.6h175z" fill="#4285F4"/>
+                        <path d="M81.4 222.2c7.8 22.9 22.8 43.2 42.6 57.1 12.4 8.7 26.6 14.9 41.4 17.9 14.6 3 29.7 2.6 44.4.1 14.6-2.6 28.7-7.9 41-16.2l59.1 45.9c-21.3 19.7-48 33.1-76.2 39.6-31.2 7.1-64.2 7.3-95.2-1-24.6-6.5-47.7-18.2-67.6-34.1-20.9-16.6-38.3-38-50.4-62 20.3-15.7 40.6-31.5 60.9-47.3z" fill="#34A853"/>
+                    </svg>
+                </div>
+                <div class="btn-separator"></div>
+                <div class="btn-text">
+                    <span>Sign up with Google</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.createElement('div');
+            particlesContainer.classList.add('particles');
+            particlesContainer.id = 'particles';
+            document.body.appendChild(particlesContainer);
+
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+
+                // Random size between 5px and 20px
+                const size = Math.random() * 15 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Initialize particles when page loads
+        document.addEventListener('DOMContentLoaded', createParticles);
+    </script>
+</body>
+</html>

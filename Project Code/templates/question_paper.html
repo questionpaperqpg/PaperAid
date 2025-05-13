@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Question Paper</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Generated Question Paper for {{ year }} - {{ subject }}</h1>
+        
+        <h3>Topics:</h3>
+        <ul>
+            {% for topic in question_paper %}
+                <li>
+                    <strong>{{ topic.topic }}:</strong> {{ topic.marks }} marks
+                    <br>
+                    Question Types: {{ ', '.join(topic.question_types) }}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h3>Generated Questions:</h3>
+        <p>{{ question_paper }}</p>  <!-- Render the generated paper here -->
+    </div>
+</body>
+</html>

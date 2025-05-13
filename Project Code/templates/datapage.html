@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload PDF</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --danger-color: #ef476f;
+            --text-color: #2b2d42;
+            --light-text: #f8f9fa;
+            --bg-color: #f8f9fa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.8), rgba(76, 201, 240, 0.8));
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-15px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(-30px) translateX(10px);
+            }
+        }
+
+        .upload-container {
+            width: 400px;
+            max-width: 90%;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: var(--text-color);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 3px;
+        }
+
+        .drag-drop-zone {
+            border: 2px dashed var(--primary-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .drag-drop-zone.dragover {
+            background: rgba(67, 97, 238, 0.1);
+            border-color: var(--secondary-color);
+        }
+
+        #pdf_upload {
+            display: none;
+        }
+
+        .file-label {
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            fill: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .drag-text {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-info {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            margin-top: 1rem;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .upload-button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            position: relative;
+            width: 100%;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .upload-button:hover {
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .loading-circle {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--primary-color);
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Status notification styles (hidden by default) */
+        .status-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .status-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .status-notification i {
+            font-size: 1.2rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .upload-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .drag-drop-zone {
+                min-height: 150px;
+                padding: 1rem;
+            }
+
+            .status-notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                width: calc(100% - 20px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="particles" id="particles"></div>
+
+    <!-- Status Notification (hidden by default) -->
+    <div class="status-notification" id="status-notification">
+        <i class="fas fa-info-circle"></i>
+        <span id="status-message">Loading subjects...</span>
+    </div>
+
+    <div class="upload-container">
+        <h2 class="upload-title">Upload Question Paper</h2>
+
+        <form action="/upload_pdf" method="POST" enctype="multipart/form-data" class="upload-form">
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="year">Select Year</label>
+                <select name="year" id="year" required onchange="updateSubjects()" style="width: 100%; padding: 10px; border-radius: 8px;">
+                    <option value="">-- Please select --</option>
+                    <option value="First Year">First Year</option>
+                    <option value="Second Year">Second Year</option>
+                    <option value="Third Year">Third Year</option>
+                    <option value="Fourth Year">Fourth Year</option>
+                </select>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="branch">Select Branch</label>
+                <select name="branch" id="branch" required onchange="updateSubjects()" style="width: 100%; padding: 10px; border-radius: 8px;">
+                    <option value="">-- Please select --</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Electronics and Communication">Electronics and Communication</option>
+                    <option value="Instrumentation">Instrumentation</option>
+                    <option value="Mechanical">Mechanical</option>
+                    <option value="Metallurgy">Metallurgy</option>
+                    <option value="Civil">Civil</option>
+                    <option value="Production">Production</option>
+                </select>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="subject">Select Subject</label>
+                <select name="subject" id="subject" required style="width: 100%; padding: 10px; border-radius: 8px;">
+                    <option value="">-- Please select --</option>
+                </select>
+            </div>
+            
+        
+            <h2 class="upload-title"> </h2>
+
+            <div class="drag-drop-zone" id="drop-zone">
+                <input type="file" id="pdf_upload" name="pdf_file" accept=".pdf" required>
+                <label for="pdf_upload" class="file-label">
+                    <svg class="upload-icon" viewBox="0 0 24 24">
+                        <path
+                            d="M14,13V17H10V13H7L12,8L17,13H14M19.35,10.03C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.03C2.34,8.36 0,10.9 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.03Z" />
+                    </svg>
+                    <div class="drag-text">Drag & Drop PDF or Click to Browse</div>
+                    <div class="file-info" id="file-name"></div>
+                </label>
+                <div class="progress-bar" id="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="upload-button">
+                <span class="button-text">Process PDF</span>
+                <div class="loading-spinner"></div>
+            </button>
+        </form>
+    </div>
+
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-circle"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('pdf_upload');
+            const fileName = document.getElementById('file-name');
+            const progressBar = document.getElementById('progress-bar');
+            const progressFill = document.querySelector('.progress-fill');
+            const uploadButton = document.querySelector('.upload-button');
+            const spinner = document.querySelector('.loading-spinner');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const statusNotification = document.getElementById('status-notification');
+            const statusMessage = document.getElementById('status-message');
+
+            // Drag and drop handlers
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFileSelection(files[0]);
+                }
+            });
+
+            // File input change handler
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileSelection(e.target.files[0]);
+                }
+            });
+
+            // Form submit handler
+            document.querySelector('form').addEventListener('submit', (e) => {
+                if (!fileInput.files.length) {
+                    e.preventDefault();
+                    showStatus('Please select a PDF file first', 'danger');
+                    return;
+                }
+
+                uploadButton.disabled = true;
+                spinner.style.display = 'block';
+                loadingOverlay.style.display = 'flex';
+                uploadButton.querySelector('.button-text').textContent = 'Uploading...';
+
+                // Simulate upload progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 10;
+                    progressFill.style.width = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(progressInterval);
+                    }
+                }, 300);
+            });
+
+            function handleFileSelection(file) {
+                fileName.textContent = `Selected: ${file.name} (${formatFileSize(file.size)})`;
+                progressBar.style.display = 'block';
+                progressFill.style.width = '0%';
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            // Function to show status messages
+            window.showStatus = function(message, type = 'info') {
+                statusMessage.textContent = message;
+                statusNotification.classList.add('show');
+                
+                // Change color based on type
+                if (type === 'danger') {
+                    statusNotification.style.backgroundColor = 'var(--danger-color)';
+                } else if (type === 'success') {
+                    statusNotification.style.backgroundColor = '#28a745';
+                } else {
+                    statusNotification.style.backgroundColor = 'var(--primary-color)';
+                }
+                
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    statusNotification.classList.remove('show');
+                }, 5000);
+            }
+
+            // Hide status on click
+            statusNotification.addEventListener('click', () => {
+                statusNotification.classList.remove('show');
+            });
+        });
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+
+                // Random size between 5px and 20px
+                const size = Math.random() * 15 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Initialize particles when page loads
+        document.addEventListener('DOMContentLoaded', createParticles);
+
+        // Function to fetch subjects from Firebase via the backend
+        async function updateSubjects() {
+            const year = document.getElementById("year").value;
+            const branch = document.getElementById("branch").value;
+            const subjectDropdown = document.getElementById("subject");
+            
+            if (year && branch) {
+                try {
+                    // Show loading status
+                    showStatus(`Loading subjects for ${year} ${branch}...`);
+                    
+                    // Update dropdown to show loading
+                    subjectDropdown.innerHTML = "<option value=''>Loading subjects...</option>";
+                    subjectDropdown.disabled = true;
+                    
+                    // Fetch subjects from backend
+                    const response = await fetch(`/get_subjects?year=${encodeURIComponent(year)}&department=${encodeURIComponent(branch)}`, {
+                        method: 'GET',
+                        headers: {
+                            'Cache-Control': 'no-cache',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+                    
+                    // Parse response
+                    const subjects = await response.json();
+                    
+                    // Enable dropdown and populate with subjects
+                    subjectDropdown.disabled = false;
+                    subjectDropdown.innerHTML = "<option value=''>-- Please select --</option>";
+                    
+                    if (subjects && subjects.length > 0) {
+                        subjects.forEach(subject => {
+                            const option = document.createElement("option");
+                            option.value = subject;
+                            option.text = subject;
+                            subjectDropdown.appendChild(option);
+                        });
+                        showStatus(`Loaded ${subjects.length} subjects successfully`, 'success');
+                    } else {
+                        showStatus('No subjects found for this selection', 'info');
+                    }
+                    
+                } catch (error) {
+                    console.error("Failed to load subjects:", error);
+                    subjectDropdown.disabled = false;
+                    subjectDropdown.innerHTML = "<option value=''>-- Please select --</option>";
+                    showStatus('Error loading subjects. Please try again.', 'danger');
+                }
+            }
+        }
+
+        // Helper function to display status messages
+        function showStatus(message, type = 'info') {
+            const statusNotification = document.getElementById('status-notification');
+            const statusMessage = document.getElementById('status-message');
+            
+            statusMessage.textContent = message;
+            
+            // Set color based on message type
+            if (type === 'danger') {
+                statusNotification.style.backgroundColor = 'var(--danger-color)';
+            } else if (type === 'success') {
+                statusNotification.style.backgroundColor = '#28a745';
+            } else {
+                statusNotification.style.backgroundColor = 'var(--primary-color)';
+            }
+            
+            // Show notification
+            statusNotification.classList.add('show');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                statusNotification.classList.remove('show');
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,235 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: pi;
+    
+    background-image: url(../images/bgrnd.jpg), linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #555;
+}
+
+
+
+h1 {
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+form {
+    max-width: 370px;
+    width: 100%;
+    padding: 40px;
+    background-color: var(--mint-cream);
+    
+  
+    transition: transform 0.2s ease-in-out;
+}
+
+/* form:hover {
+    transform: scale(1.02);
+} */
+
+label {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    border-color: #4CAF50;
+    outline: none;
+    background-color: #fff;
+}
+
+input[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+a {
+    text-decoration: none;
+    color: #59B3B3ff;
+
+    font-size: 1.2rem;
+    text-align: center;
+    display: block;
+    margin-top: 15px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+p {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #777;
+}
+/* General page styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--alice-blue);
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container for centering all content */
+.container {
+    text-align: center;
+    background: var(--azure-web);
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Title styling */
+h1 {
+    color: var(--verdigris);
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+/* Styling for the form */
+form.signup-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px; /* Adjusted spacing between form elements */
+}
+
+/* Styling for labels */
+form label {
+    font-size: 14px;
+    color: #757575; /* Light gray color */
+    text-align: left;
+    width: 100%;
+    margin-bottom: 1px; /* Reduced space between label and input */
+    font-weight: 500;
+}
+
+/* Styling for input fields */
+form input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: var(--mint-cream);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+}
+
+form input:focus {
+    outline: none;
+    border-color: var(--verdigris);
+    box-shadow: 0 0 4px rgba(89, 179, 179, 0.3);
+}
+
+/* Styling for the submit button */
+.submit-btn {
+    background-color: #59B3B3; /* Verdigris color */
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 15px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+}
+
+.submit-btn:hover {
+    background-color: #4EB1B1; /* Slightly darker shade for hover effect */
+    transform: scale(1.05);
+}
+
+.submit-btn:active {
+    background-color: #3A9696; /* Darker shade for active state */
+    transform: scale(0.98);
+}
+
+/* Link to log in */
+.login-link {
+    font-size: 16px;
+    margin-top: 20px;
+    color: var(--verdigris-2);
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.login-link:hover {
+    color: var(--verdigris);
+}
+
+/* Color palette styling */
+:root {
+    --azure-web: #EBF6F5ff;
+    --verdigris: #59B3B3ff;
+    --mint-cream: #EEF8F6ff;
+    --alice-blue: #EBF4F6ff;
+    --verdigris-2: #4EB1B1ff;
+}
+
+
+.google-btn {
+    display: inline-block;
+    background-color: #4285F4;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.google-btn:hover {
+    background-color: #357ABD;
+}

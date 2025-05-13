@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Questions</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #c95e37;
+            --accent-color: #4cc9f0;
+            --danger-color: #ef476f;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --text-color: #2b2d42;
+            --light-text: #f8f9fa;
+            --bg-color: #f8f9fa;
+            --card-bg: rgba(222, 242, 248, 0.9);
+            --input-border: #d1d1d1;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        .check-similarity-button {
+    background: linear-gradient(45deg, var(--warning-color), var(--primary-color));
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.check-similarity-button:hover {
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.similarity-score {
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
+    display: inline-block;
+    background-color: #f1f1f1;
+    color: #333;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+.similarity-low {
+    background-color: rgba(0, 255, 0, 0.2);
+    color: #0c6c0c;
+}
+.similarity-medium {
+    background-color: rgba(255, 255, 0, 0.2);
+    color: #a38b00;
+}
+.similarity-high {
+    background-color: rgba(255, 0, 0, 0.2);
+    color: #a10000;
+}
+
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.8), rgba(76, 201, 240, 0.8));
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-color);
+            position: relative;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-15px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(-30px) translateX(10px);
+            }
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 40px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 0.8s ease;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 80px);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .paper-header {
+            text-align: center;
+            margin-bottom: 25px;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .paper-header h1 {
+            margin-bottom: 10px;
+            color: var(--text-color);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .paper-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 3px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .scrollable-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            background-color: rgba(249, 249, 249, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+            max-height: calc(100vh - 220px);
+            position: relative;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .section-header {
+            font-weight: 600;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--light-text);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .topic {
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.1em;
+            padding-left: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .subtopic {
+            margin-left: 25px;
+            font-style: italic;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInRight 0.5s ease;
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .question:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-header {
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.05em;
+        }
+        
+        .question textarea {
+            width: 100%;
+            min-height: 180px;
+            padding: 15px;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+        
+        .question textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            outline: none;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+            background-color: transparent;
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+        }
+        
+        .button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            min-width: 160px;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        .button:hover::before {
+            left: 100%;
+        }
+        
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .save-button {
+            background: linear-gradient(45deg, var(--success-color), #04a57c);
+            color: white;
+            min-width: 220px;
+            padding: 14px 28px;
+        }
+        
+        .return-button {
+            background: linear-gradient(45deg, var(--danger-color), #d1365e);
+            color: white;
+        }
+        
+        .regenerate-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 4px rgba(76, 201, 240, 0.3);
+        }
+        
+        .regenerate-button.easier {
+            background: linear-gradient(45deg, var(--success-color), #04a57c);
+            margin-right: 10px;
+        }
+        
+        .regenerate-button.harder {
+            background: linear-gradient(45deg, var(--danger-color), #d1365e);
+        }
+        
+        .regenerate-button.database {
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe); /* Purple gradient */
+            margin-right: 10px;
+        }
+        
+        .regenerate-button i {
+            font-size: 0.9em;
+        }
+        
+        .regenerate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.4);
+        }
+        
+        .bt-level-button {
+            background: linear-gradient(45deg, #3f37c9, #4361ee);
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 4px rgba(67, 97, 238, 0.3);
+            margin-right: 10px;
+        }
+        
+        .bt-level-button:hover {
+            background: linear-gradient(45deg, #4361ee, #3f37c9);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.4);
+        }
+        
+        .loading {
+            display: none;
+            margin-left: 10px;
+            font-style: italic;
+            color: var(--text-color);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+        
+        .bt-level-badge {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            background: linear-gradient(45deg, #3f37c9, #4361ee);
+            color: white;
+            font-size: 13px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        .question {
+            position: relative;
+        }
+        
+        .scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 20px auto;
+                min-height: calc(100vh - 40px);
+            }
+            
+            .button {
+                min-width: 120px;
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+            
+            .save-button {
+                min-width: 160px;
+            }
+            
+            .section-header {
+                font-size: 1.1em;
+                padding: 10px;
+            }
+            
+            .question {
+                padding: 15px;
+            }
+            
+            .question textarea {
+                min-height: 150px;
+                padding: 12px;
+            }
+            
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <input type="hidden" id="subjectName" value="{{ subject }}">
+
+    <div class="container">
+        <div class="paper-header animate__animated animate__fadeIn">
+            <h1>{{ question_paper_header }}</h1>
+            <div class="paper-header animate__animated animate__fadeIn">
+                
+            
+                <!-- 🔥 New Check Similarity Button -->
+                <button type="button" class="button check-similarity-button" onclick="checkSimilarity()" style="margin-top: 15px;">
+                    <i class="fas fa-project-diagram"></i> Check Similarity
+                </button>
+            </div>
+            
+        </div>
+        <div id="avg-similarity-box" style="
+    display: none;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 16px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: linear-gradient(45deg, #3a86ff, #8338ec);
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+">
+    🔄 Average Similarity: <span id="avg-similarity-value">--</span>%
+</div>
+
+        
+        <div class="scrollable-content" id="scrollable-content">
+            <form action="{{ url_for('save_questions') }}" method="post" id="question-form">
+                {% for section_num, section in sections.items() %}
+                <div class="section">
+                    <div class="section-header">
+                        <i class="fas fa-bookmark"></i> SECTION {{ section_num }}: {{ section.info.type }} 
+                        ({{ section.questions|length }} Questions, {{ section.info.marks }} Marks each)<br>
+                        <i class="fas fa-brain"></i> Bloom's Taxonomy Level: {{ section.info.bloom_level }}
+                    </div>
+                    
+                    {% set topics = {} %}
+                    {% for q in section.questions %}
+                        {% if q.topic not in topics %}
+                            {% set _ = topics.update({q.topic: {}}) %}
+                        {% endif %}
+                        {% if q.subtopic not in topics[q.topic] %}
+                            {% set _ = topics[q.topic].update({q.subtopic: []}) %}
+                        {% endif %}
+                        {% set _ = topics[q.topic][q.subtopic].append(q) %}
+                    {% endfor %}
+                    
+                    {% for topic, subtopics in topics.items() %}
+                        <div class="topic">
+                            <i class="fas fa-folder"></i> Topic: {{ topic }}
+                        </div>
+                        
+                        {% for subtopic, questions in subtopics.items() %}
+                            <div class="subtopic">
+                                <i class="fas fa-file-alt"></i> Subtopic: {{ subtopic }}
+                            </div>
+                            
+                            {% for q in questions %}
+                                <div class="question" id="question-container-{{ q.id }}">
+                                    <div class="question-header">
+                                        <span><i class="fas fa-question-circle"></i> Q{{ q.id }} ({{ q.marks }} Marks):</span>
+                                        <div>
+                                            <!-- BT Level Button -->
+                                            <button type="button" 
+                                                    class="bt-level-button" 
+                                                    onclick="showBtLevel({{ q.id }}, '{{ q.bt_level }}')">
+                                                <i class="fas fa-brain"></i> BT Level
+                                            </button>
+                                            <!-- Regenerate Easier Button -->
+                                            <button type="button" 
+                                                    class="regenerate-button easier" 
+                                                    onclick="regenerateQuestion({{ q.id }}, '{{ q.topic }}', '{{ q.subtopic }}', {{ q.marks }}, '{{ section.info.type }}', '{{ section.info.bloom_level }}', '{{ year }}', '{{ subject }}', 'easy')">
+                                                <i class="fas fa-arrow-down"></i> Easier
+                                            </button>
+                                            <!-- Regenerate Harder Button -->
+                                            <button type="button" 
+                                                    class="regenerate-button harder" 
+                                                    onclick="regenerateQuestion({{ q.id }}, '{{ q.topic }}', '{{ q.subtopic }}', {{ q.marks }}, '{{ section.info.type }}', '{{ section.info.bloom_level }}', '{{ year }}', '{{ subject }}', 'hard')">
+                                                <i class="fas fa-arrow-up"></i> Harder
+                                            </button>
+                                            <!-- Regenerate Database Button -->
+                                            <button type="button" 
+                                                    class="regenerate-button database" 
+                                                    onclick="regenerateQuestion({{ q.id }}, '{{ q.topic }}', '{{ q.subtopic }}', {{ q.marks }}, '{{ section.info.type }}', '{{ section.info.bloom_level }}', '{{ year }}', '{{ subject }}', 'database')">
+                                                <i class="fas fa-database"></i> Database
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <textarea name="question_{{ q.id }}" id="question_{{ q.id }}">{{ q.text }}</textarea>
+                                    <div class="loading" id="loading-{{ q.id }}">
+                                        <i class="fas fa-spinner fa-spin"></i> Regenerating question...
+                                    </div>
+                                    <div class="similarity-score" id="similarity-score-{{ q.id }}"></div>
+                                    <div class="bt-level-badge" id="bt-level-{{ q.id }}"></div>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </form>
+        </div>
+        
+        <div class="button-group">
+            <a href="{{ url_for('thirdpage') }}" class="button return-button">
+                <i class="fas fa-arrow-left"></i> Return to Setup
+            </a>
+            <button type="submit" form="question-form" class="button save-button">
+                <i class="fas fa-save"></i> Save and Generate PDF
+            </button>
+        </div>
+    </div>
+    
+    <!-- Scroll to top button -->
+    <div class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (!particlesContainer) return;
+            
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 5px and 20px
+                const size = Math.random() * 15 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Scroll to top function
+        function scrollToTop() {
+            const scrollableContent = document.getElementById('scrollable-content');
+            if (scrollableContent) {
+                scrollableContent.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        // Show/hide scroll to top button based on scroll position
+        function toggleScrollToTopButton() {
+            const scrollableContent = document.getElementById('scrollable-content');
+            const scrollToTopButton = document.getElementById('scrollToTop');
+            
+            if (scrollableContent && scrollToTopButton) {
+                if (scrollableContent.scrollTop > 300) {
+                    scrollToTopButton.classList.add('show');
+                } else {
+                    scrollToTopButton.classList.remove('show');
+                }
+            }
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // Add event listeners for scroll to top functionality
+            const scrollableContent = document.getElementById('scrollable-content');
+            const scrollToTopButton = document.getElementById('scrollToTop');
+            
+            if (scrollableContent && scrollToTopButton) {
+                scrollableContent.addEventListener('scroll', toggleScrollToTopButton);
+                scrollToTopButton.addEventListener('click', scrollToTop);
+            }
+        });
+        
+        // Function to show BT Level in a modal
+        function showBtLevel(questionId, currentBtLevel) {
+            const textarea = document.getElementById('question_' + questionId);
+            const questionText = textarea.value.trim();
+        
+            if (!questionText) return;
+        
+            const loadingElement = document.getElementById('loading-' + questionId);
+            const badgeElement = document.getElementById('bt-level-' + questionId);
+            loadingElement.style.display = 'block';
+            loadingElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Predicting BT Level...';
+        
+            fetch('/predict_bt_level', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question: questionText })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const btLevels = {
+                        "BT1": "Remember",
+                        "BT2": "Understand",
+                        "BT3": "Apply",
+                        "BT4": "Analyze",
+                        "BT5": "Evaluate",
+                        "BT6": "Create",
+                    };
+                    const label = btLevels[data.bt_level] || 'Unknown';
+                    badgeElement.textContent = `🧠 BT Level: ${data.bt_level.slice(-1)} (${label})`;
+
+                } else {
+                    badgeElement.textContent = '⚠️ Error fetching BT level';
+                }
+            })
+            .catch(() => {
+                badgeElement.textContent = '⚠️ Failed';
+            })
+            .finally(() => {
+                loadingElement.style.display = 'none';
+            });
+        }
+        
+        
+        // Function to regenerate a question with difficulty
+        function regenerateQuestion(questionId, topic, subtopic, marks, questionType, bloomLevel, year, subject, difficulty) {
+            const loadingElement = document.getElementById('loading-' + questionId);
+            loadingElement.style.display = 'block';
+            
+            const questionContainer = document.getElementById('question-container-' + questionId);
+            questionContainer.style.opacity = '0.7';
+            
+            fetch('/regenerate_question', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    question_id: questionId,
+                    topic: topic,
+                    subtopic: subtopic,
+                    marks: marks,
+                    question_type: questionType,
+                    bloom_level: bloomLevel,
+                    year: year,
+                    subject: subject,
+                    difficulty: difficulty // Pass the difficulty parameter
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const textarea = document.getElementById('question_' + questionId);
+                textarea.value = data.new_question;
+                
+                textarea.style.backgroundColor = 'rgba(76, 201, 240, 0.1)';
+                setTimeout(() => {
+                    textarea.style.backgroundColor = '';
+                }, 1000);
+                
+                loadingElement.style.display = 'none';
+                questionContainer.style.opacity = '1';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loadingElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error regenerating question. Try again.';
+                loadingElement.style.color = 'var(--danger-color)';
+                
+                setTimeout(() => {
+                    loadingElement.style.display = 'none';
+                    loadingElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Regenerating question...';
+                    loadingElement.style.color = 'var(--text-color)';
+                }, 3000);
+                
+                questionContainer.style.opacity = '1';
+            });
+        }
+    
+
+
+
+async function viewEmbedding(questionId) {
+    const textarea = document.getElementById('question_' + questionId);
+    const questionText = textarea.value.trim();
+
+    if (!questionText) {
+        console.warn(`Question ${questionId} is empty.`);
+        return;
+    }
+
+    const response = await fetch('/generate_embedding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: questionText })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+        const embedding = data.embedding;
+        console.log(`🔵 Embedding for Question ${questionId}:`, embedding);
+    } else {
+        console.error('❌ Failed to generate embedding for Question', questionId);
+    }
+}
+async function checkSimilarity() {
+    const subjectName = document.getElementById('subjectName').value.trim();
+    const response = await fetch(`/get_subject_embeddings?subject=${encodeURIComponent(subjectName)}`);
+    const data = await response.json();
+
+    if (!data.success || data.embeddings.length === 0) {
+        alert("No existing questions found for this subject in database!");
+        return;
+    }
+
+    const stored_embeddings = data.embeddings;
+    const textareas = document.querySelectorAll('textarea');
+
+    let totalSimilarity = 0;
+    let validQuestions = 0;
+
+    for (let textarea of textareas) {
+        const questionText = textarea.value.trim();
+        const questionId = textarea.id.split("_")[1];
+
+        if (!questionText) continue;
+
+        const simResponse = await fetch('/compare_embeddings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                current_question: questionText,
+                stored_embeddings: stored_embeddings
+            })
+        });
+
+        const simData = await simResponse.json();
+        const scoreDiv = document.getElementById('similarity-score-' + questionId);
+
+        if (simData.success) {
+            const similarity = simData.similarity * 100;
+            totalSimilarity += similarity;
+            validQuestions++;
+
+            let badgeClass = '';
+            let label = '';
+            let bgColor = '';
+
+            if (similarity > 80) {
+                badgeClass = 'similarity-high';
+                label = 'Very Similar';
+                bgColor = 'rgba(255, 0, 0, 0.2)';
+            } else if (similarity >= 50) {
+                badgeClass = 'similarity-medium';
+                label = 'Moderate Similarity';
+                bgColor = 'rgba(255, 255, 0, 0.2)';
+            } else {
+                badgeClass = 'similarity-low';
+                label = 'Unique';
+                bgColor = 'rgba(0, 255, 0, 0.2)';
+            }
+
+            scoreDiv.style.display = 'inline-block';
+            scoreDiv.innerHTML = `🔍 Similarity: ${similarity.toFixed(2)}% – <strong>${label}</strong>`;
+            scoreDiv.className = 'similarity-score ' + badgeClass;
+            textarea.style.backgroundColor = bgColor;
+
+        } else {
+            scoreDiv.style.display = 'inline-block';
+            scoreDiv.innerHTML = '⚠️ Similarity check failed';
+            scoreDiv.className = 'similarity-score';
+        }
+    }
+
+    if (validQuestions > 0) {
+        const avgSimilarity = totalSimilarity / validQuestions;
+        document.getElementById('avg-similarity-box').style.display = 'block';
+        document.getElementById('avg-similarity-value').innerText = avgSimilarity.toFixed(2);
+    }
+}
+
+
+
+
+    </script>
+</body>
+</html>

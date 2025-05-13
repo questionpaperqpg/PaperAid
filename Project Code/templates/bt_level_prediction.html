@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predict BT Level</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --danger-color: #ef476f;
+            --success-color: #06d6a0;
+            --text-color: #2b2d42;
+            --light-text: #f8f9fa;
+            --bg-color: #f8f9fa;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.2s ease;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.8), rgba(76, 201, 240, 0.8));
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .home-btn, .logout-btn {
+            position: absolute;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+        }
+        
+        .home-btn {
+            top: 20px;
+            left: 20px;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+        }
+        
+        .home-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .logout-btn {
+            top: 20px;
+            right: 20px;
+            background-color: var(--danger-color);
+            color: var(--light-text);
+        }
+        
+        .logout-btn:hover {
+            background-color: #d64161;
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            width: 550px;
+            max-width: 90%;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        h2 {
+            margin-bottom: 30px;
+            color: var(--text-color);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 3px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--text-color);
+            letter-spacing: 0.5px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            resize: vertical;
+            min-height: 180px; /* Increased text area size */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.25);
+            outline: none;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 12px 24px; /* Reduced button size */
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin: 15px 0;
+            width: 75%; /* Reduced button width */
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .result-container.show {
+            display: block;
+            opacity: 1;
+        }
+        
+        .bt-level {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .result-divider {
+            width: 40%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            margin: 15px auto;
+        }
+        
+        .level-number {
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+        
+        .level-name {
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--text-color);
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+        
+        .level-description {
+            font-size: 14px;
+            color: #666;
+            margin-top: 15px;
+            line-height: 1.6;
+            font-style: italic;
+        }
+        
+        .loading {
+            display: none;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .loading.show {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(67, 97, 238, 0.2);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary-color);
+            border-left: 3px solid var(--accent-color);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .error-message.show {
+            display: block;
+            opacity: 1;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            .home-btn, .logout-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+            .level-number {
+                font-size: 36px;
+            }
+            .level-name {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('zeropage') }}" class="home-btn">
+        <i class="fas fa-home"></i> Home
+    </a>
+    
+    <a href="{{ url_for('logout') }}" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+    
+    <div class="container">
+        <h2>BT Level Prediction</h2>
+        
+        <form id="bt-prediction-form">
+            <div class="form-group">
+                <label for="question">Enter your question:</label>
+                <textarea id="question" name="question" class="form-control" placeholder="Type your question here..." required></textarea>
+                <div class="error-message" id="question-error">Please enter a valid question</div>
+            </div>
+            
+            <button type="submit" class="btn">
+                <i class="fas fa-brain"></i> Predict BT Level
+            </button>
+        </form>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+        </div>
+        
+        <div class="result-container" id="result-container">
+            <h3>Prediction Result</h3>
+            <div class="result-divider"></div>
+            <div class="bt-level" id="bt-level">
+                <span class="level-number" id="level-number">-</span>
+                <span class="level-name" id="level-name">-</span>
+                <p class="level-description" id="level-description"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Level names and descriptions
+        const levelData = {
+            "1": {
+                name: "Remember",
+                description: "This question requires recalling information, recognizing terms, or identifying basic concepts."
+            },
+            "2": {
+                name: "Understand",
+                description: "This question tests comprehension by requiring explanation, summarization, or interpretation of information."
+            },
+            "3": {
+                name: "Apply",
+                description: "This question asks for implementation of knowledge or using concepts in new situations."
+            },
+            "4": {
+                name: "Analyse",
+                description: "This question requires breaking down information into parts, finding patterns, or organizing ideas."
+            },
+            "5": {
+                name: "Evaluate",
+                description: "This question asks for judgments, critiques, or assessments based on specific criteria."
+            },
+            "6": {
+                name: "Create",
+                description: "This question involves producing new work, designing solutions, or developing original ideas."
+            }
+        };
+        
+        // Initialize the page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Form elements
+            const form = document.getElementById('bt-prediction-form');
+            const loading = document.getElementById('loading');
+            const resultContainer = document.getElementById('result-container');
+            const levelNumber = document.getElementById('level-number');
+            const levelName = document.getElementById('level-name');
+            const levelDescription = document.getElementById('level-description');
+            const questionError = document.getElementById('question-error');
+            const questionInput = document.getElementById('question');
+            
+            // Form submission handler
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const question = questionInput.value.trim();
+                
+                if (!question) {
+                    questionError.classList.add('show');
+                    return;
+                }
+                
+                questionError.classList.remove('show');
+                loading.classList.add('show');
+                resultContainer.classList.remove('show');
+                
+                // Submit the form data
+                fetch('/api/predict_bt_level', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    loading.classList.remove('show');
+                    
+                    if (data.success) {
+                        // Format the BT level correctly
+                        let btLevel = data.bt_level.toString();
+                        // Remove any "BT" prefix if it exists
+                        btLevel = btLevel.replace(/^BT/i, '');
+                        
+                        levelNumber.textContent = btLevel;
+                        levelName.textContent = levelData[btLevel].name;
+                        levelDescription.textContent = levelData[btLevel].description;
+                        
+                        resultContainer.classList.add('show');
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    loading.classList.remove('show');
+                    alert('An error occurred. Please try again.');
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

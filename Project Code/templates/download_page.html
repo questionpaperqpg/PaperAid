@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Question Paper</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+            --text-color: #2b2d42;
+            --light-text: #f8f9fa;
+            --bg-color: #f8f9fa;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.8), rgba(76, 201, 240, 0.8));
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-15px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(-30px) translateX(10px);
+            }
+        }
+        
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--danger-color);
+            color: var(--light-text);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .logout-btn:hover {
+            background-color: #d64161;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .container {
+            width: 500px;
+            max-width: 90%;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success-icon {
+            font-size: 60px;
+            color: var(--success-color);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .message {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+        
+        .filename {
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 30px;
+            padding: 12px 20px;
+            background-color: #f0f2f5;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            color: var(--text-color);
+            animation: fadeIn 1s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-block;
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            text-decoration: none;
+            min-width: 160px;
+            animation: fadeIn 1s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .download-btn {
+            background: linear-gradient(45deg, #06d6a0, #1ac9a0);
+            animation-delay: 0.2s;
+        }
+        
+        .return-btn {
+            background: #d64141;;
+            animation-delay: 0.3s;
+        }
+        
+        .save-btn {
+            background: linear-gradient(45deg, #ffd166, #ffb347);
+            animation-delay: 0.4s;
+            color: #2b2d42;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, a.2);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            animation: zoomIn 0.3s ease forwards;
+        }
+        
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            text-align: center;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .modal-close:hover {
+            color: var(--danger-color);
+        }
+        
+        .file-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .file-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 12px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .file-option:hover {
+            background-color: #f0f2f5;
+            transform: translateY(-2px);
+        }
+        
+        .file-option i {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        .file-option .pdf-icon {
+            color: #e74c3c;
+        }
+        
+        .file-option .text-icon {
+            color: #3498db;
+        }
+        
+        .file-option-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+        
+        .file-option-title {
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 16px;
+        }
+        
+        .file-option-desc {
+            font-size: 12px;
+            color: #777;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <a href="{{ url_for('logout') }}" class="logout-btn animate__animated animate__fadeIn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+    
+    <div class="container">
+        <div class="success-icon animate__animated animate__fadeIn">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="message animate__animated animate__fadeIn">Your question paper is ready!</div>
+        <div class="filename animate__animated animate__fadeIn">{{ filename }}</div>
+        <div class="button-group">
+            <button id="downloadBtn" class="btn download-btn animate__animated animate__fadeIn">
+                <i class="fas fa-download"></i> Download Document
+            </button>
+            
+            <button id="saveToDbButton" class="btn save-btn animate__animated animate__fadeIn">
+                <i class="fas fa-database"></i> Save to Database
+            </button>
+            <a href="{{ url_for('thirdpage') }}" class="btn return-btn animate__animated animate__fadeIn">
+                <i class="fas fa-undo"></i> Return to Setup
+            </a>
+        </div>
+    </div>
+    
+    <!-- Download Options Modal -->
+    <div id="downloadModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+            <div class="modal-title">Choose Download Format</div>
+            <div class="file-options">
+                <a href="{{ url_for('download_document', type='pdf') }}" class="file-option">
+                    <i class="fas fa-file-pdf pdf-icon"></i>
+                    <div class="file-option-info">
+                        <span class="file-option-title">PDF Document</span>
+                        <span class="file-option-desc">Best for printing and formal sharing</span>
+                    </div>
+                </a>
+                <a href="{{ url_for('download_document', type='docx') }}" class="file-option">
+                    <i class="fas fa-file-word text-icon" style="color: #4285F4;"></i>
+                    <div class="file-option-info">
+                        <span class="file-option-title">Word Document (.docx)</span>
+                        <span class="file-option-desc">Editable format for Microsoft Word</span>
+                    </div>
+                </a>
+                <a href="{{ url_for('download_document', type='text') }}" class="file-option">
+                    <i class="fas fa-file-alt text-icon"></i>
+                    <div class="file-option-info">
+                        <span class="file-option-title">Text Document (.txt)</span>
+                        <span class="file-option-desc">Plain text format for easy editing</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (!particlesContainer) return;
+            
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 5px and 20px
+                const size = Math.random() * 15 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Modal functionality
+        const downloadBtn = document.getElementById('downloadBtn');
+        const downloadModal = document.getElementById('downloadModal');
+        const closeModal = document.getElementById('closeModal');
+        
+        downloadBtn.addEventListener('click', () => {
+            downloadModal.classList.add('show');
+        });
+        
+        closeModal.addEventListener('click', () => {
+            downloadModal.classList.remove('show');
+        });
+        
+        // Close modal when clicking outside of it
+        window.addEventListener('click', (event) => {
+            if (event.target === downloadModal) {
+                downloadModal.classList.remove('show');
+            }
+        });
+        
+        // Save to database functionality
+        document.getElementById('saveToDbButton').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/save_questions_to_db', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                
+                if (response.ok) {
+                    alert('Questions saved to database successfully!');
+                } else {
+                    alert('Failed to save questions to database.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while saving questions to database.');
+            }
+        });
+        
+        // Initialize particles when page loads
+        document.addEventListener('DOMContentLoaded', createParticles);
+    </script>
+</body>
+</html>

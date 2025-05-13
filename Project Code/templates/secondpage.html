@@ -1,0 +1,580 @@
+
+<!-- second page  -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Question Paper</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --danger-color: #ef476f;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --text-color: #2b2d42;
+            --light-text: #f8f9fa;
+            --bg-color: #f8f9fa;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --input-border: #d1d1d1;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.8), rgba(76, 201, 240, 0.8));
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text-color);
+            padding: 40px 20px;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-15px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(-30px) translateX(10px);
+            }
+        }
+        
+        .container {
+            width: 700px;
+            max-width: 90%;
+            padding: 40px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 0.8s ease;
+            position: relative;
+            z-index: 10;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1, h2 {
+            margin-bottom: 30px;
+            color: var(--text-color);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1::after, h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 3px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 16px;
+        }
+        
+        .form-group select, 
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            background-color: white;
+            color: var(--text-color);
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .form-group select:focus, 
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            min-width: 150px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(-1px);
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        button:hover::before {
+            left: 100%;
+        }
+        
+        .add-topic-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
+            margin-top: 20px;
+        }
+        
+        .view-syllabus-button {
+            background: linear-gradient(45deg, var(--success-color), var(--primary-color));
+        }
+        
+        .subtopic-box {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid var(--input-border);
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            transition: all 0.3s;
+        }
+        
+        .subtopic-box:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .subtopic-option {
+            display: block;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        
+        .subtopic-option:hover {
+            background-color: rgba(76, 201, 240, 0.1);
+        }
+        
+        .subtopic-option input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .topic {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
+            border: 1px solid var(--input-border);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        hr {
+            margin: 20px 0;
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--input-border), transparent);
+        }
+        
+        /* Custom select styling */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232b2d42' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+            padding-right: 40px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container animate__animated animate__fadeIn">
+        <h1>Generating {{ year }} {{ subject }} Question Paper</h1>
+        
+        <!-- View Syllabus Form -->
+        <div class="action-buttons">
+            <form action="{{ url_for('view_syllabus') }}" method="POST">
+                <input type="hidden" name="year" value="{{ year }}">
+                <input type="hidden" name="subject" value="{{ subject }}">
+                <input type="hidden" name="branch" value="{{ branch }}">
+                <button type="submit" class="view-syllabus-button">
+                    <i class="fas fa-book-open"></i> View Syllabus
+                </button>
+            </form>
+        </div>
+
+        <!-- Form for question paper generation -->
+        <form action="{{ url_for('thirdpage') }}" method="POST" id="questionPaperForm" class="animate__animated animate__fadeIn animate__delay-1s">
+            <input type="hidden" name="year" value="{{ year }}">
+            <input type="hidden" name="subject" value="{{ subject }}">
+            <input type="hidden" name="branch" value="{{ branch }}">
+            <input type="hidden" name="topic_subtopic_map" id="topic_subtopic_map" value="">
+
+            <!-- Topics Container -->
+            <div id="topics-container">
+                <div class="topic">
+                    <div class="form-group">
+                        <label for="topic">
+                            <i class="fas fa-clipboard-list"></i> Select Topic:
+                        </label>
+                        <select name="topic[]" class="topic-select" onchange="loadSubtopics(this)" required>
+                            <option value="">Select a Topic</option>
+                            <!-- Topics will be populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subtopics">
+                            <i class="fas fa-tasks"></i> Select Subtopic(s):
+                        </label>
+                        <div class="subtopic-box" id="subtopic-box">
+                            <!-- Subtopics will be populated dynamically as checkboxes -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="marks">
+                            <i class="fas fa-star"></i> Marks:
+                        </label>
+                        <input type="number" name="marks[]" min="1" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Another Topic Button -->
+            <button type="button" class="add-topic-button" onclick="addTopic()">
+                <i class="fas fa-plus"></i> Add Another Topic
+            </button>
+
+            <!-- Submit Button -->
+            <button type="submit">
+                <i class="fas fa-arrow-right"></i> Next
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 5px and 20px
+                const size = Math.random() * 15 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Initialize particles when page loads
+        document.addEventListener('DOMContentLoaded', createParticles);
+        
+        // Initialize the topic-subtopic map
+        let topicSubtopicMap = {};
+        
+        // Function to load topics from Firebase
+        function loadTopics() {
+            fetch('/get_topics?subject={{ subject }}')
+                .then(response => response.json())
+                .then(topics => {
+                    const topicSelects = document.querySelectorAll('.topic-select');
+                    topicSelects.forEach(select => {
+                        const selectedValue = select.value; // Save the currently selected value
+                        select.innerHTML = '<option value="">Select a Topic</option>';
+                        topics.forEach(topic => {
+                            const option = document.createElement('option');
+                            option.value = topic;
+                            option.text = topic;
+                            select.appendChild(option);
+                        });
+                        select.value = selectedValue; // Restore the selected value
+                    });
+                })
+                .catch(error => console.error('Error loading topics:', error));
+        }
+
+        // Function to load subtopics for a selected topic
+        function loadSubtopics(selectElement) {
+            const topic = selectElement.value;
+            const subtopicBox = selectElement.closest('.topic').querySelector('.subtopic-box');
+
+            if (!topic) {
+                subtopicBox.innerHTML = '<div class="animate__animated animate__fadeIn">Please select a topic first</div>';
+                return;
+            }
+
+            // Show loading indicator
+            subtopicBox.innerHTML = '<div class="animate__animated animate__fadeIn">Loading subtopics...</div>';
+
+            fetch(`/get_subtopics?subject={{ subject }}&topic=${topic}`)
+                .then(response => response.json())
+                .then(subtopics => {
+                    subtopicBox.innerHTML = '';
+                    
+                    if (subtopics.length === 0) {
+                        subtopicBox.innerHTML = '<div class="animate__animated animate__fadeIn">No subtopics found for this topic</div>';
+                        return;
+                    }
+                    
+                    subtopics.forEach((subtopic, index) => {
+                        const label = document.createElement('label');
+                        label.className = 'subtopic-option animate__animated animate__fadeIn';
+                        label.style.animationDelay = `${index * 0.05}s`;
+                        label.innerHTML = `
+                            <input type="checkbox" name="subtopics[]" value="${subtopic}" data-topic="${topic}" onchange="updateTopicSubtopicMap(this)">
+                            ${subtopic}
+                        `;
+                        subtopicBox.appendChild(label);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading subtopics:', error);
+                    subtopicBox.innerHTML = '<div class="animate__animated animate__fadeIn" style="color: var(--danger-color);">Error loading subtopics. Please try again.</div>';
+                });
+        }
+
+        // Function to update the topic-subtopic map
+        function updateTopicSubtopicMap(checkbox) {
+            const topic = checkbox.getAttribute('data-topic');
+            const subtopic = checkbox.value;
+            
+            if (!topicSubtopicMap[topic]) {
+                topicSubtopicMap[topic] = [];
+            }
+            
+            if (checkbox.checked) {
+                // Add subtopic to the map if it's not already there
+                if (!topicSubtopicMap[topic].includes(subtopic)) {
+                    topicSubtopicMap[topic].push(subtopic);
+                }
+            } else {
+                // Remove subtopic from the map
+                const index = topicSubtopicMap[topic].indexOf(subtopic);
+                if (index > -1) {
+                    topicSubtopicMap[topic].splice(index, 1);
+                }
+                
+                // Remove topic if it has no subtopics
+                if (topicSubtopicMap[topic].length === 0) {
+                    delete topicSubtopicMap[topic];
+                }
+            }
+            
+            // Update the hidden input field with the JSON stringified map
+            document.getElementById('topic_subtopic_map').value = JSON.stringify(topicSubtopicMap);
+        }
+
+        // Function to add a new topic input section
+        function addTopic() {
+            const topicContainer = document.getElementById('topics-container');
+            const newTopicDiv = document.createElement('div');
+            newTopicDiv.classList.add('topic');
+            newTopicDiv.classList.add('animate__animated');
+            newTopicDiv.classList.add('animate__fadeIn');
+
+            newTopicDiv.innerHTML = `
+                <div class="form-group">
+                    <label for="topic">
+                        <i class="fas fa-clipboard-list"></i> Select Topic:
+                    </label>
+                    <select name="topic[]" class="topic-select" onchange="loadSubtopics(this)" required>
+                        <option value="">Select a Topic</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="subtopics">
+                        <i class="fas fa-tasks"></i> Select Subtopic(s):
+                    </label>
+                    <div class="subtopic-box" id="subtopic-box">
+                        <div>Please select a topic first</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="marks">
+                        <i class="fas fa-star"></i> Marks:
+                    </label>
+                    <input type="number" name="marks[]" min="1" required>
+                </div>
+            `;
+
+            topicContainer.appendChild(newTopicDiv);
+            loadTopics(); // Populate topics in the new dropdown
+            
+            // Scroll to the new topic section
+            setTimeout(() => {
+                newTopicDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        // Handle form submission to include the topic-subtopic map
+        document.getElementById('questionPaperForm').addEventListener('submit', function(event) {
+            // Make sure the topic-subtopic map is updated before submission
+            document.getElementById('topic_subtopic_map').value = JSON.stringify(topicSubtopicMap);
+            
+            // Basic validation
+            const topics = document.querySelectorAll('.topic-select');
+            let valid = true;
+            
+            topics.forEach(topic => {
+                if (!topic.value) {
+                    valid = false;
+                    topic.classList.add('error');
+                } else {
+                    topic.classList.remove('error');
+                }
+            });
+            
+            if (!valid) {
+                event.preventDefault();
+                alert('Please select a topic for each section.');
+            }
+        });
+        
+        // Load topics when the page loads
+        window.onload = function() {
+            loadTopics();
+            
+            // Check for URL parameters to show any success/error messages
+            const urlParams = new URLSearchParams(window.location.search);
+            const message = urlParams.get('message');
+            const messageType = urlParams.get('type');
+            
+            if (message) {
+                // Display the message (you would need to add a message div to the HTML)
+                showMessage(message, messageType === 'success');
+            }
+        };
+        
+        // Add a message function if needed
+        function showMessage(text, isSuccess) {
+            // Implementation would depend on your UI design
+            console.log(`${isSuccess ? 'Success' : 'Error'}: ${text}`);
+        }
+    </script>
+</body>
+</html>

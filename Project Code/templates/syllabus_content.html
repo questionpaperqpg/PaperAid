@@ -1,0 +1,10 @@
+{% for topic, subtopics in topics_dict.items() %}
+    <div class="topic">
+        <h3>{{ topic }}</h3>
+        <div class="subtopics">
+            {% for subtopic in subtopics %}
+                <div class="subtopic">{{ subtopic }}</div>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
